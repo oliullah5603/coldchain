@@ -1,0 +1,13 @@
+import { config } from '../src/config.js';
+import { Store } from '../src/store.js';
+import { makeFixtures } from '../src/fixtures.js';
+const cfg = config();
+if (cfg.mode !== 'hapi') throw new Error('Set EHR_MODE=hapi and FHIR_BASE_URL first. This script seeds synthetic records only.');
+const store = new Store(cfg.dataDir, cfg.auditKey), fixtures = store.fixture(makeFixtures);
+const bundle = { resourceType: 'Bundle', type: 'transaction', entry: [fixtures.patient, ...fixtures.orders].map(resource => ({ resource, request: { method: 'PUT', url: `${resource.resourceType}/${resource.id}` } })) };
+const response = await fetch(cfg.fhirBase, { method: 'POST', headers: { 'Content-Type': 'application/fhir+json' }, body: JSON.stringify(bundle), signal: AbortSignal.timeout(30000) });
+if (!response.ok) throw new Error(`HAPI seed failed: HTTP ${response.status}`);
+const result = await response.json();
+if (result.type !== 'transaction-response' || !result.entry?.every(e => /^2\d\d/.test(e.response?.status))) throw new Error('HAPI seed transaction not confirmed');
+console.log(`Seeded ${result.entry.length} synthetic resources in ${cfg.fhirBase}. No real patient information used.`);
+store.close();

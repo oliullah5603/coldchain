@@ -1,0 +1,23 @@
+{
+  "resourceType": "StructureDefinition",
+  "id": "delivery-eta",
+  "url": "https://coldchain.example/fhir/StructureDefinition/delivery-eta",
+  "version": "1.0.0",
+  "name": "ColdchainDeliveryEta",
+  "title": "Estimated courier delivery time",
+  "status": "draft",
+  "description": "Estimated arrival of a pharmacy courier at the inpatient floor. Not an actual administration or handover time.",
+  "fhirVersion": "4.0.1",
+  "kind": "complex-type",
+  "abstract": false,
+  "context": [{ "type": "element", "expression": "MedicationDispense" }],
+  "type": "Extension",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Extension",
+  "derivation": "constraint",
+  "differential": { "element": [
+    { "id": "Extension", "path": "Extension", "short": "Estimated arrival at the inpatient floor" },
+    { "id": "Extension.extension", "path": "Extension.extension", "max": "0" },
+    { "id": "Extension.url", "path": "Extension.url", "fixedUri": "https://coldchain.example/fhir/StructureDefinition/delivery-eta" },
+    { "id": "Extension.value[x]", "path": "Extension.value[x]", "min": 1, "type": [{ "code": "dateTime" }] }
+  ] }
+}

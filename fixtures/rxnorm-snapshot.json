@@ -1,0 +1,70 @@
+{
+  "capturedAt": "2026-09-19T09:10:02.006Z",
+  "source": "https://rxnav.nlm.nih.gov/REST",
+  "entries": {
+    "/rxcui/311041/properties.json": {
+      "properties": {
+        "rxcui": "311041",
+        "name": "insulin glargine 100 UNT/ML Injectable Solution",
+        "synonym": "insulin analog, glargine 100 UNT/ML Injectable Solution",
+        "tty": "SCD",
+        "language": "ENG",
+        "suppress": "N",
+        "umlscui": ""
+      }
+    },
+    "/rxcui/311041/related.json?tty=SCD": {
+      "relatedGroup": {
+        "rxcui": null,
+        "conceptGroup": [
+          {
+            "tty": "SCD",
+            "conceptProperties": [
+              {
+                "rxcui": "311041",
+                "name": "insulin glargine 100 UNT/ML Injectable Solution",
+                "synonym": "insulin analog, glargine 100 UNT/ML Injectable Solution",
+                "tty": "SCD",
+                "language": "ENG",
+                "suppress": "N",
+                "umlscui": ""
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/rxcui/847232/properties.json": {
+      "properties": {
+        "rxcui": "847232",
+        "name": "3 ML insulin glargine 100 UNT/ML Pen Injector [Lantus]",
+        "synonym": "3 ML Lantus 100 UNT/ML Pen Injector",
+        "tty": "SBD",
+        "language": "ENG",
+        "suppress": "N",
+        "umlscui": ""
+      }
+    },
+    "/rxcui/847232/related.json?tty=SCD": {
+      "relatedGroup": {
+        "rxcui": null,
+        "conceptGroup": [
+          {
+            "tty": "SCD",
+            "conceptProperties": [
+              {
+                "rxcui": "847230",
+                "name": "3 ML insulin glargine 100 UNT/ML Pen Injector",
+                "synonym": "insulin analog, glargine 300 UNT Pen Injector",
+                "tty": "SCD",
+                "language": "ENG",
+                "suppress": "N",
+                "umlscui": ""
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

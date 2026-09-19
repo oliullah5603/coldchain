@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: coldchain
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm test
+    startCommand: npm run start:hosted
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_VERSION
+        value: 24.14.0
+      - key: EHR_MODE
+        value: hapi
+      - key: FHIR_BASE_URL
+        value: https://hapi.fhir.org/baseR4
+      - key: RXNORM_MODE
+        value: live
+      - key: AUDIT_KEY
+        generateValue: true

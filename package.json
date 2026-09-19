@@ -1,0 +1,22 @@
+{
+  "name": "coldchain-pharmacy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "FHIR R4 pharmacy-to-floor delivery safety workflow",
+  "type": "module",
+  "engines": { "node": ">=24.0.0" },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env src/server.js",
+    "start:hosted": "node --env-file-if-exists=.env scripts/start-hosted.js",
+    "test": "node --test --test-concurrency=1 test/*.test.js",
+    "capture:rxnorm": "node scripts/capture-rxnorm.js",
+    "seed:hapi": "node --env-file-if-exists=.env scripts/seed-hapi.js",
+    "verify:audit": "node --env-file-if-exists=.env scripts/verify-audit.js"
+  },
+  "dependencies": {
+    "@redoxengine/redox-hl7-v2": "1.0.1",
+    "express": "5.1.0",
+    "helmet": "8.1.0",
+    "zod": "4.1.12"
+  }
+}

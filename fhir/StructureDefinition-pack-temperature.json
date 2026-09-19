@@ -1,0 +1,25 @@
+{
+  "resourceType": "StructureDefinition",
+  "id": "pack-temperature",
+  "url": "https://coldchain.example/fhir/StructureDefinition/pack-temperature",
+  "version": "1.0.0",
+  "name": "ColdchainPackTemperature",
+  "title": "Recorded medication pack temperature",
+  "status": "draft",
+  "description": "Manually recorded pack temperature at pharmacy release, in UCUM Cel. Does not assert continuous cold-chain monitoring.",
+  "fhirVersion": "4.0.1",
+  "kind": "complex-type",
+  "abstract": false,
+  "context": [{ "type": "element", "expression": "MedicationDispense" }],
+  "type": "Extension",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Extension",
+  "derivation": "constraint",
+  "differential": { "element": [
+    { "id": "Extension", "path": "Extension", "short": "Recorded pack temperature" },
+    { "id": "Extension.extension", "path": "Extension.extension", "max": "0" },
+    { "id": "Extension.url", "path": "Extension.url", "fixedUri": "https://coldchain.example/fhir/StructureDefinition/pack-temperature" },
+    { "id": "Extension.value[x]", "path": "Extension.value[x]", "min": 1, "type": [{ "code": "Quantity" }] },
+    { "id": "Extension.value[x].system", "path": "Extension.value[x].system", "min": 1, "fixedUri": "http://unitsofmeasure.org" },
+    { "id": "Extension.value[x].code", "path": "Extension.value[x].code", "min": 1, "fixedCode": "Cel" }
+  ] }
+}

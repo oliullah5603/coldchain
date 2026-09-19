@@ -1,0 +1,25 @@
+{
+  "checkedAt": "2026-09-19T09:24:29.240Z",
+  "fhirBase": "https://hapi.fhir.org/baseR4",
+  "rxnorm": "https://rxnav.nlm.nih.gov/REST",
+  "checks": [
+    "HAPI advertises FHIR R4 4.0.1",
+    "Seeded synthetic Patient and MedicationRequest resources",
+    "Local PKCE authorization completed (public HAPI has no SMART authorization)",
+    "Queried live HAPI prescriptions by patient launch context",
+    "Live RxNorm formulation check passed; HAPI committed MedicationDispense and AuditEvent",
+    "Read both committed resources back from HAPI",
+    "Replay returned original result without another dispatch",
+    "Nurse-app alert contains only allowlisted delivery fields"
+  ],
+  "locations": [
+    "MedicationDispense/34581/_history/1",
+    "AuditEvent/34582/_history/1"
+  ],
+  "audit": {
+    "valid": true,
+    "count": 3,
+    "head": "4747dba354c61759d423c89a325a04d5beb87359da8fa4d84cde1549600b9505"
+  },
+  "success": true
+}
