@@ -4,7 +4,7 @@ Verified on September 19, 2026 using Node.js 24.14.0 on Windows.
 
 ## Automated tests
 
-`npm test`: **16 passed, 0 failed**.
+`npm test`: **22 passed, 0 failed**.
 
 - Prepared dispatch and audit persistence after store restart
 - Unauthenticated requests and missing CSRF
@@ -45,3 +45,9 @@ Tested in the Codex browser with a 1440px desktop viewport and narrow mobile lay
 - No browser console warnings or errors observed during the main workflow check
 
 `npm audit` reported zero known dependency vulnerabilities at installation. Runtime data and audit keys are excluded from the distributable archive.
+
+## Final regression review
+
+Additional tests cover selected-order mismatch, invalid numeric syntax, unsupported timing/rates/limits, substitution review, expired sessions and incorrect origins. All 22 tests passed. npm audit --omit=dev reported zero known vulnerabilities on 19 September 2026.
+
+HAPI validation returned no error/fatal issues for all four resource types. Narrative, terminology and local-extension warnings remain; see fhir-validation.json and final-review.md.

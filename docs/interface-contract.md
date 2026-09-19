@@ -13,7 +13,7 @@
 
 ## Clinical scope
 
-The demo is deliberately limited to a simple, single-medication subcutaneous insulin order with exact dose matching. It is a prescription-consistency check, not a dosing recommendation engine. It does not perform unit conversion, calculate doses, approve therapeutic substitutions, verify administration frequency, check interactions, or establish that a recurring dose is due. Message-level idempotency does not prevent two separately authorized messages for the same prescription; clinical scheduling and dispense-quantity limits require additional policy.
+The demo supports only an unscheduled, fixed-dose, single-medication subcutaneous insulin order with exact dose matching. Any timing, rate, dose range or maximum-dose constraint requires review. The selected prescription must match the incoming message. A different RxCUI requires substitution review even when its clinical formulation matches. It is a prescription-consistency check, not a dosing recommendation engine. It does not perform unit conversion, calculate doses, approve therapeutic substitutions, verify administration frequency, check interactions, or establish that a recurring dose is due. Message-level idempotency does not prevent two separately authorized messages for the same prescription; clinical scheduling and dispense-quantity limits require additional policy.
 
 The 2–8°C pack acceptance band, sealed-container checkbox, two synthetic couriers, and maximum 60-minute ETA are **demo operational assumptions**. No IoT sensor, temperature history, cold-chain excursion model, or product-specific stability calculation is claimed. The temperature is manually recorded.
 

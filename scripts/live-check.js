@@ -31,7 +31,7 @@ try {
   const orders = await fetch(`${cfg.origin}/api/orders`, { headers }).then(r => r.json());
   assert.equal(orders.orders.length, 3); report.checks.push('Queried live HAPI prescriptions by patient launch context');
   const message = makeMessage(runtime.fixtures.orders[0], runtime.fixtures.patient);
-  const response = await fetch(`${cfg.origin}/api/dispatch`, { method: 'POST', headers, body: JSON.stringify({ message, courierId: 'courier-01', etaMinutes: 15, temperature: 4, sealed: true }) });
+  const response = await fetch(`${cfg.origin}/api/dispatch`, { method: 'POST', headers, body: JSON.stringify({ orderId: runtime.fixtures.orders[0].id, message, courierId: 'courier-01', etaMinutes: 15, temperature: 4, sealed: true }) });
   const result = await response.json();
   assert.equal(response.status, 200, JSON.stringify(result));
   report.checks.push('Live RxNorm formulation check passed; HAPI committed MedicationDispense and AuditEvent');
@@ -41,7 +41,7 @@ try {
     assert.ok(['MedicationDispense', 'AuditEvent'].includes(record.resourceType));
   }
   report.checks.push('Read both committed resources back from HAPI');
-  const replay = await fetch(`${cfg.origin}/api/dispatch`, { method: 'POST', headers, body: JSON.stringify({ message, courierId: 'courier-01', etaMinutes: 15, temperature: 4, sealed: true }) }).then(r => r.json());
+  const replay = await fetch(`${cfg.origin}/api/dispatch`, { method: 'POST', headers, body: JSON.stringify({ orderId: runtime.fixtures.orders[0].id, message, courierId: 'courier-01', etaMinutes: 15, temperature: 4, sealed: true }) }).then(r => r.json());
   assert.equal(replay.duplicate, true); report.checks.push('Replay returned original result without another dispatch');
   const notifications = await fetch(`${cfg.origin}/api/notifications`, { headers }).then(r => r.json());
   assert.deepEqual(Object.keys(notifications[0]).sort(), ['body', 'courier', 'eta', 'title']);

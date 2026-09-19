@@ -1,0 +1,107 @@
+{
+  "checkedAt": "2026-09-19T10:53:46.845Z",
+  "server": "https://hapi.fhir.org/baseR4",
+  "results": [
+    {
+      "resourceType": "Patient",
+      "status": 200,
+      "outcomeType": "OperationOutcome",
+      "issues": [
+        {
+          "severity": "warning",
+          "code": "processing",
+          "diagnostics": "Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation)",
+          "expression": [
+            "Patient"
+          ]
+        }
+      ]
+    },
+    {
+      "resourceType": "MedicationRequest",
+      "status": 200,
+      "outcomeType": "OperationOutcome",
+      "issues": [
+        {
+          "severity": "warning",
+          "code": "processing",
+          "diagnostics": "CodeSystem is unknown and can't be validated: http://www.nlm.nih.gov/research/umls/rxnorm for 'http://www.nlm.nih.gov/research/umls/rxnorm#311041'",
+          "expression": [
+            "MedicationRequest.medication.ofType(CodeableConcept)"
+          ]
+        },
+        {
+          "severity": "warning",
+          "code": "processing",
+          "diagnostics": "Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation)",
+          "expression": [
+            "MedicationRequest"
+          ]
+        }
+      ]
+    },
+    {
+      "resourceType": "MedicationDispense",
+      "status": 200,
+      "outcomeType": "OperationOutcome",
+      "issues": [
+        {
+          "severity": "information",
+          "code": "processing",
+          "diagnostics": "Unknown extension https://coldchain.example/fhir/StructureDefinition/delivery-eta",
+          "expression": [
+            "MedicationDispense.extension[0]"
+          ]
+        },
+        {
+          "severity": "information",
+          "code": "processing",
+          "diagnostics": "Unknown extension https://coldchain.example/fhir/StructureDefinition/pack-temperature",
+          "expression": [
+            "MedicationDispense.extension[1]"
+          ]
+        },
+        {
+          "severity": "warning",
+          "code": "processing",
+          "diagnostics": "CodeSystem is unknown and can't be validated: http://www.nlm.nih.gov/research/umls/rxnorm for 'http://www.nlm.nih.gov/research/umls/rxnorm#311041'",
+          "expression": [
+            "MedicationDispense.medication.ofType(CodeableConcept)"
+          ]
+        },
+        {
+          "severity": "warning",
+          "code": "processing",
+          "diagnostics": "CodeSystem is unknown and can't be validated: https://coldchain.example/fhir/performer-function for 'https://coldchain.example/fhir/performer-function#courier'",
+          "expression": [
+            "MedicationDispense.performer[0].function"
+          ]
+        },
+        {
+          "severity": "warning",
+          "code": "processing",
+          "diagnostics": "Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation)",
+          "expression": [
+            "MedicationDispense"
+          ]
+        }
+      ]
+    },
+    {
+      "resourceType": "AuditEvent",
+      "status": 200,
+      "outcomeType": "OperationOutcome",
+      "issues": [
+        {
+          "severity": "warning",
+          "code": "processing",
+          "diagnostics": "Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation)",
+          "expression": [
+            "AuditEvent"
+          ]
+        }
+      ]
+    }
+  ],
+  "success": true
+}

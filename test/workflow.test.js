@@ -34,7 +34,53 @@ before(async () => {
 });
 after(async () => { await new Promise(resolve => server.close(resolve)); runtime.close(); rmSync(temp, { recursive: true, force: true }); });
 const sample = (options = {}) => makeMessage(runtime.fixtures.orders[0], runtime.fixtures.patient, options);
-const input = (options = {}) => ({ message: sample(), courierId: 'courier-01', etaMinutes: 15, temperature: 4, sealed: true, ...options });
+const input = (options = {}) => ({ orderId: runtime.fixtures.orders[0].id, message: sample(), courierId: 'courier-01', etaMinutes: 15, temperature: 4, sealed: true, ...options });
+
+test('Selected prescription must match the pasted HL7 order', async () => {
+  const orderId = runtime.fixtures.orders[1].id;
+  const before = runtime.store.searchFHIR('MedicationDispense').length;
+  const preview = await request('/api/validate', { message: sample(), orderId });
+  assert.equal(preview.status, 422);
+  assert.equal(preview.data.code, 'SELECTED_ORDER_MISMATCH');
+  const release = await request('/api/dispatch', input({ orderId }));
+  assert.equal(release.data.code, 'SELECTED_ORDER_MISMATCH');
+  assert.equal(runtime.store.searchFHIR('MedicationDispense').length, before);
+});
+
+test('Dose text must be an HL7 decimal, never hexadecimal or JavaScript exponent syntax', () => {
+  for (const value of ['0xA', '1e1']) assert.throws(() => parseOrder(sample().replace('|10||', `|${value}||`)));
+});
+
+test('Unsupported dosing schedules, rates and modifiers require pharmacist review', () => {
+  const patient = runtime.fixtures.patient, parsed = parseOrder(sample());
+  for (const extra of [{ timing: { repeat: { frequency: 2, period: 1, periodUnit: 'd' } } },
+    { doseAndRate: [{ doseQuantity: runtime.fixtures.orders[0].dosageInstruction[0].doseAndRate[0].doseQuantity, rateQuantity: { value: 1 } }] },
+    { maxDosePerAdministration: { value: 5, system: 'http://unitsofmeasure.org', code: '[IU]' } }]) {
+    const order = structuredClone(runtime.fixtures.orders[0]);
+    Object.assign(order.dosageInstruction[0], extra);
+    assert.throws(() => validatePrescription(order, patient, parsed, patient.id));
+  }
+});
+
+test('RxNorm equivalence cannot silently authorize product substitution', async () => {
+  const compare = runtime.workflow.rxnorm.compare;
+  runtime.workflow.rxnorm.compare = async (expected, requested) => ({ prescription: { code: expected, clinicalCode: 'same' }, request: { code: requested, clinicalCode: 'same' } });
+  try {
+    const result = await request('/api/dispatch', input({ message: sample({ code: '999999' }) }));
+    assert.equal(result.status, 422);
+    assert.equal(result.data.code, 'SUBSTITUTION_REVIEW');
+  } finally { runtime.workflow.rxnorm.compare = compare; }
+});
+
+test('Expired sessions and requests with an incorrect Origin are rejected', async () => {
+  const current = runtime.auth.sessions.get(cookie.slice('coldchain_session='.length));
+  const expiry = current.expires;
+  try {
+    current.expires = Date.now() - 1;
+    assert.equal((await request('/api/orders')).status, 401);
+  } finally { current.expires = expiry; }
+  assert.equal((await request('/api/validate', { message: sample() }, { headers: { Origin: 'https://untrusted.example' } })).status, 403);
+});
 test('Unauthenticated access and missing CSRF are rejected', async () => {
   assert.equal((await request('/api/orders', undefined, { headers: { Cookie: '' } })).status, 401);
   assert.equal((await request('/api/validate', { message: sample() }, { headers: { 'X-CSRF-Token': '' } })).status, 403);

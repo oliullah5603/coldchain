@@ -49,6 +49,10 @@ export function validatePrescription(order, patient, message, contextPatient) {
   const instructions = order.dosageInstruction || [];
   insist(instructions.length === 1 && instructions[0].doseAndRate?.length === 1 && !instructions[0].asNeededBoolean && !instructions[0].asNeededCodeableConcept && !instructions[0].modifierExtension?.length, 'COMPLEX_DOSE', 'This prescription needs pharmacist review: only a single fixed, non-PRN dose is supported.');
   const dose = instructions[0].doseAndRate[0].doseQuantity;
+  const instruction = instructions[0], doseAndRate = instruction.doseAndRate[0];
+  insist(!instruction.timing && !instruction.maxDosePerPeriod && !instruction.maxDosePerAdministration && !instruction.maxDosePerLifetime &&
+    !doseAndRate.rateQuantity && !doseAndRate.rateRange && !doseAndRate.rateRatio && !doseAndRate.doseRange && !doseAndRate.modifierExtension?.length,
+    'COMPLEX_DOSE', 'Timing, rate and dose-limit instructions require pharmacist review; this demo supports a single unscheduled fixed dose only.');
   insist(dose && !dose.comparator && dose.system === UCUM && dose.code === message.unit && dose.value === message.dose, 'DOSE_MISMATCH', 'The requested dose or unit does not match the original prescription.');
   insist(instructions[0].route?.coding?.some(x => x.system === 'http://snomed.info/sct' && x.code === message.route), 'ROUTE_MISMATCH', 'The administration route does not match the prescription.');
   const validity = order.dispenseRequest?.validityPeriod;
@@ -60,10 +64,11 @@ export function medicationCode(concept) {
   return codes[0];
 }
 export function auditEvent(action, outcome = '0', id, entityReference) {
+  const interaction = action === 'dispatch-committed' ? 'transaction' : action === 'prescription-read' ? 'search-type' : null;
   return { resourceType: 'AuditEvent', meta: { tag: [{ system: `${NS}/event`, code: id }] },
     type: { system: 'http://terminology.hl7.org/CodeSystem/audit-event-type', code: 'rest' },
-    subtype: [{ system: `${NS}/audit-action`, code: action }], action: action === 'prescription-read' ? 'R' : 'E',
-    recorded: new Date().toISOString(), outcome,
+    subtype: [{ system: interaction ? 'http://hl7.org/fhir/restful-interaction' : `${NS}/audit-action`, code: interaction || action }], action: action === 'prescription-read' ? 'R' : 'E',
+    recorded: new Date().toISOString(), outcome, outcomeDesc: action,
     agent: [{ who: { identifier: { system: `${NS}/service`, value: 'coldchain' } }, requestor: true }],
     source: { observer: { identifier: { system: `${NS}/service`, value: 'pharmacy-gateway' } } },
     ...(entityReference ? { entity: [{ what: { reference: entityReference } }] } : {}) };

@@ -86,6 +86,8 @@ The app currently runs as a top-level window; CSP blocks third-party iframe embe
 
 ## Verification
 
+See the [final review](docs/final-review.md) for corrected defects, requirement status and remaining limitations.
+
 ```sh
 npm test
 npm run verify:audit

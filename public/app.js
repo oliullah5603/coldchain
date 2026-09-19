@@ -67,20 +67,28 @@ $('#scenario').addEventListener('change', loadMessage);
 $('#hl7-message').addEventListener('input', resetValidation);
 ['#sealed', '#temperature', '#eta'].forEach(s => $(s).addEventListener('input', releaseReady));
 $('#validate').addEventListener('click', async () => {
+  if (state.busy) return;
+  const message = $('#hl7-message').value, orderId = state.selected?.id;
   state.busy = true; $('#validate').disabled = true; releaseReady(); text('#validate', 'Checking prescription and RxNorm…');
   try {
-    const result = await api('validate', { message: $('#hl7-message').value }); state.valid = true;
+    const result = await api('validate', { message, orderId });
+    if (state.selected?.id !== orderId || $('#hl7-message').value !== message) throw new Error('The selected order or message changed during verification. Verify it again.');
+    state.valid = true;
     $('#validation-result').innerHTML = `<div class="validation-checks">${result.checks.map(c => `<span>${escape(c)}</span>`).join('')}</div><p class="validation-source">Verified against ${escape(result.terminology.source)}.</p>`;
     text('#release-status', 'Checks passed'); $('#release-status').className = 'badge success'; $('#notice').classList.add('hidden');
   } catch (e) { state.valid = false; $('#validation-result').innerHTML = `<p class="validation-error">Release blocked: ${escape(e.message)}</p>`; text('#release-status', 'Release blocked'); $('#release-status').className = 'badge error'; }
   finally { state.busy = false; $('#validate').disabled = false; text('#validate', 'Verify prescription & medication →'); releaseReady(); refreshOperational().catch(() => {}); }
 });
 $('#dispatch').addEventListener('click', async () => {
+  if (state.busy) return;
+  const orderId = state.selected?.id, message = $('#hl7-message').value;
   state.busy = true; releaseReady(); text('#dispatch', 'Verifying and updating the chart…');
   try {
-    const result = await api('dispatch', { message: $('#hl7-message').value, courierId: $('#courier').value, etaMinutes: Number($('#eta').value), temperature: Number($('#temperature').value), sealed: $('#sealed').checked });
+    const result = await api('dispatch', { orderId, message, courierId: $('#courier').value, etaMinutes: Number($('#eta').value), temperature: Number($('#temperature').value), sealed: $('#sealed').checked });
     notice(result.duplicate ? 'This handoff was already recorded. No duplicate chart entry or notification was created.' : 'Handoff confirmed. The chart and audit record are saved, and the nurse-app notification is available.');
-    pushPreview(result.notification); text('#release-status', 'Dispatched'); $('#release-status').className = 'badge success'; state.valid = false;
+    pushPreview(result.notification);
+    if (state.selected?.id === orderId && $('#hl7-message').value === message) { text('#release-status', 'Dispatched'); $('#release-status').className = 'badge success'; }
+    state.valid = false;
     await refreshOperational();
   } catch (e) { notice(e.message, true); }
   finally { state.busy = false; text('#dispatch', 'Confirm courier handoff ↗'); releaseReady(); }
@@ -93,6 +101,7 @@ async function initialize() {
   const s = state.session;
   text('#environment', s.mode === 'smart' ? 'CONNECTED EHR' : s.mode === 'hapi' ? 'HAPI SYNTHETIC TEST' : 'SYNTHETIC DEMO');
   if (s.mode === 'smart') text('#login-note', 'Connect using your organization’s registered SMART on FHIR authorization service.');
+  else if (s.mode === 'hapi') text('#login-note', 'Synthetic demo: public HAPI FHIR records, live RxNorm, and simulated EHR authorization with PKCE. No password required.');
   if (!s.authenticated) return;
   $('#login').classList.add('hidden'); $('#application').classList.remove('hidden'); $('#logout').classList.remove('hidden');
   text('#connection-label', s.mode === 'demo' ? 'Demo EHR connected' : 'FHIR EHR connected');

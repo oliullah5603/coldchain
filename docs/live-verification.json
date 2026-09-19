@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-19T09:24:29.240Z",
+  "checkedAt": "2026-09-19T10:53:49.662Z",
   "fhirBase": "https://hapi.fhir.org/baseR4",
   "rxnorm": "https://rxnav.nlm.nih.gov/REST",
   "checks": [
@@ -13,13 +13,13 @@
     "Nurse-app alert contains only allowlisted delivery fields"
   ],
   "locations": [
-    "MedicationDispense/34581/_history/1",
-    "AuditEvent/34582/_history/1"
+    "MedicationDispense/34684/_history/1",
+    "AuditEvent/34685/_history/1"
   ],
   "audit": {
     "valid": true,
     "count": 3,
-    "head": "4747dba354c61759d423c89a325a04d5beb87359da8fa4d84cde1549600b9505"
+    "head": "28e9e71b70f09f0fc2ffbedf82e5a939d2c785299a33ed3d77365b70c20c577b"
   },
   "success": true
 }

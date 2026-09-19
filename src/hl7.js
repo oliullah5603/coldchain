@@ -25,6 +25,7 @@ export function parseOrder(raw) {
   insist(component(rxo['4'], '3') === 'UCUM' && component(rxo['4']) === '[IU]', 'UNSUPPORTED_UNIT', 'This demo interface accepts UCUM [IU] doses.');
   insist(component(rxr['1'], '3') === 'HL70162' && component(rxr['1']) === 'SC', 'ROUTE_MISMATCH', 'This profile supports subcutaneous administration only.');
   insist(!rxo['3'] || rxo['3'] === rxo['2'], 'DOSE_RANGE', 'Dose ranges require pharmacist review.');
+  insist(typeof rxo['2'] === 'string' && /^\+?(?:\d+(?:\.\d*)?|\.\d+)$/.test(rxo['2']), 'INVALID_DOSE', 'The HL7 dose must be a positive decimal number.');
   const identifiers = Array.isArray(pid['3']) ? pid['3'] : [pid['3']];
   const matches = identifiers.filter(x => component(x, '5') === 'MR' && component(x?.['4']) === 'DNA-DEMO');
   insist(matches.length === 1, 'PATIENT_IDENTIFIER', 'One MR identifier from the configured DNA-DEMO assigning authority is required.');

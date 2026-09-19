@@ -3,7 +3,7 @@ let previous = '';
 async function refresh() {
   try {
     const response = await fetch('/api/notifications', { credentials: 'same-origin' });
-    if (response.status === 401) { status.textContent = 'Sign in through the secure workspace to receive updates.'; return; }
+    if (response.status === 401) { previous = ''; alerts.replaceChildren(); status.textContent = 'Sign in through the secure workspace to receive updates.'; return; }
     if (!response.ok) throw new Error('Service unavailable');
     const items = await response.json(); status.textContent = 'Connected · checks for new deliveries every 5 seconds';
     const serialized = JSON.stringify(items); if (serialized === previous) return; previous = serialized;

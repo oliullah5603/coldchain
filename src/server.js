@@ -33,7 +33,7 @@ export function createApp(cfg = config()) {
     store.append(auditEvent('prescription-read', '0', randomUUID()));
     res.json({ patient, orders, ...(cfg.mode !== 'smart' ? { samples: orders.map(order => ({ orderId: order.id, message: makeMessage(order, patient), mismatch: makeMessage(order, patient, { code: '847232' }), wrongDose: makeMessage(order, patient, { dose: 99 }) })) } : {}) });
   });
-  app.post('/api/validate', async (req, res) => res.json(await workflow.preview(req.session, req.body.message)));
+  app.post('/api/validate', async (req, res) => res.json(await workflow.preview(req.session, req.body?.message, req.body?.orderId)));
   app.post('/api/dispatch', async (req, res) => res.json(await workflow.dispatch(req.session, req.body)));
   app.get('/api/deliveries', (req, res) => res.json(store.jobs(workflow.owner(req.session)).map(j => ({ id: j.id, state: j.state, created: j.created, result: j.result }))));
   app.get('/api/notifications', (req, res) => res.json(store.jobs(workflow.owner(req.session)).filter(j => j.state === 'sent').map(j => j.result.notification)));
@@ -41,7 +41,7 @@ export function createApp(cfg = config()) {
     // Operational audit view excludes clinical references; raw remote FHIR AuditEvents
     // remain controlled by the EHR's access rules.
     res.json({ integrity: store.verify(), entries: store.auditRows().map(row => ({ seq: row.seq, hash: row.hash, previous: row.previous,
-      recorded: row.event.recorded, action: row.event.subtype?.[0]?.code, outcome: row.event.outcome })) });
+      recorded: row.event.recorded, action: row.event.outcomeDesc || row.event.subtype?.[0]?.code, outcome: row.event.outcome })) });
   });
   app.get('/api/resources/:id', (req, res) => {
     const job = store.getJobId(req.params.id);
