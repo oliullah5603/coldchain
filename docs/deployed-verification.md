@@ -2,20 +2,20 @@
 
 URL: https://coldchain-jp56.onrender.com
 
-Render Free Node Web Service deployed application commit `2e5461e`.
-All 17 tests passed in the cloud build. Runtime seeded four synthetic resources
-into the public HAPI FHIR R4 sandbox and started with live NLM RxNorm enabled.
+Render Free Node Web Service successfully deployed application commit `f548d6c`.
+All 22 tests passed in the cloud build. The deployment completed in 40.9 seconds.
+Hosted mode uses the public HAPI FHIR R4 sandbox and live NLM RxNorm.
 
-Browser verification through the public HTTPS URL confirmed:
+Browser checks through the public HTTPS URL after deployment confirmed:
 
-- Connect to EHR completed the synthetic OAuth/PKCE flow.
-- Three prescriptions loaded from HAPI for the generated patient context.
-- A different formulation was rejected and courier handoff stayed disabled.
-- Matching formulation passed live NLM RxNorm verification.
-- A sealed synthetic handoff committed the chart and audit records.
-- The nurse notification displayed courier and ETA without patient details.
-- Audit chain verification succeeded and displayed blocked validation,
-  successful validation, dispatch preparation and chart-write confirmation.
+- Synthetic OAuth/PKCE launch loaded three HAPI prescriptions.
+- Pasting the first prescription's message while selecting the second was rejected with an explicit prescription mismatch. Courier handoff remained disabled.
+- Selecting the matching prescription passed live NLM verification.
+- A sealed synthetic courier handoff succeeded, with chart-write confirmation and a dispatched state.
+- The nurse inbox displayed only a fixed delivery title/body, courier and ETA, without patient or medication details.
+- Signing out in the pharmacy tab cleared the existing nurse card on its next poll and displayed a sign-in prompt.
+- No warning/error console entries were observed in the pharmacy tab during this verification.
 
-This checks the recruitment demo, not real clinician authentication, regulatory
-certification, or durable retention on the free hosting filesystem.
+Earlier deployment checks also exercised the wrong-formulation block, resource inspector and audit screen. The final automated suite covers those backend behaviours and additional safety cases; external integration and validation reports are stored alongside this document.
+
+These checks cover the recruitment demo. Real workforce authentication, regulatory compliance and immutable/durable audit retention are not established. See final-review.md for the requirement gap and clinical assumptions.
