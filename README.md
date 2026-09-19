@@ -2,6 +2,10 @@
 
 **Case 1 · Pharmacy Cold Chain to Inpatient Floor · DNA Health recruitment project**
 
+**[Live demo](https://coldchain-jp56.onrender.com)** · **[Source code](https://github.com/oliullah5603/coldchain)**
+
+Select **Connect to EHR** to enter the synthetic demo; no password is needed. The hosted app uses the public HAPI FHIR sandbox and live NLM RxNorm. Free hosting may take about a minute to wake up. This is simulated EHR authorization, not a real staff account.
+
 Coldchain reads an original FHIR prescription, validates an incoming HL7 order against RxNorm, records a pharmacy handoff in the EHR, and delivers a minimal notification to a nurse inbox. A responsive pharmacy desk exposes verification results, delivery history, the submitted FHIR resources, and audit integrity.
 
 ## Run locally
